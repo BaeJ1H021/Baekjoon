@@ -1,45 +1,55 @@
-#include<iostream>
-#include<algorithm>
-#include<vector>
+#include <algorithm>
+#include <cmath>
+#include <iostream>
+#include <queue>
+#include <string>
+#include <vector>
+
 using namespace std;
+
+// 줄의 개수
 int n;
-int result =0;
-bool visited[15]={false};
-void dfs(int cnt,vector<int> &x)
+// 전체 경우의 수
+int ans = 0;
+// 세로줄 방문 여부
+bool visited[16];
+// 세로줄 index
+int arr[16];
+
+void dfs(int cnt)
 {
-  //검사.  x[i],y[i]는 인덱스임.
+  // 대각선으로 만나는지 가지치기.
   for(int i=0;i<cnt-1;i++)
   {
-    //대각선 계산이 더 쉬운게 있다. 아니 이걸 내가 어떻게알아;
-    if( cnt-1-i == abs(x[cnt-1]-x[i]))  
+    // 대각선상에 있으려면 가로차와 세로차가 같아야함. 
+    if(abs(arr[cnt-1]-arr[i]) == cnt-1-i)
       return;
   }
-  if(cnt ==n) //다 놓았으면.
+  // 기저사례
+  if(cnt==n)  
   {
-    result++;
+    ans++;
     return;
   }
-  for(int j=0;j<n;j++)
-  {
-    if(!visited[j]) //j번째 세로줄을 방문했는지. 
+  for(int i=0;i<n;i++)
+  {  
+    // i번째 세로줄에 없다면.
+    if(!visited[i])
     {
-      visited[j] = true;
-      x.push_back(j);
-      dfs(cnt+1,x);
-      visited[j] = false;
-      x.pop_back();
+      visited[i] = true;
+      arr[cnt] = i;
+      dfs(cnt+1);
+      visited[i] = false;
     }
   }
 }
 
-int main()
-{ 
+int main() {
   ios::sync_with_stdio(false);
   cin.tie(0);
-  
-  cin>> n;
-  vector<int> b;
-  dfs(0,b);
-  cout << result;
+
+  cin >> n;
+  dfs(0);
+  cout << ans;
   return 0;
 }
